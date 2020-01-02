@@ -10,8 +10,11 @@ Vue.use(ElementUI);
 
 // 导入全局样式
 import "@/styles/bass.less";
-
-import router from './router/index'
+import router from './router/index';
+import axios from 'axios'
+Vue.prototype.$axios = axios
+// axios基地址配制
+axios.defaults.baseURL='http://127.0.0.1/heimamm/public'
 
 Vue.config.productionTip = false
 
