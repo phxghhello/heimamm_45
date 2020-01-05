@@ -243,6 +243,7 @@ export default {
               this.$message.error(res.data.message);
             } else if (res.data.code === 200) {
               this.$message.success("老铁，你可算回来啦！！！");
+              this.$router.push('/index')
             }
           });
         } else {
