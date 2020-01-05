@@ -92,7 +92,7 @@
           <el-input v-model="registerForm.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
-          <el-input v-model="registerForm.password" autocomplete="off"></el-input>
+          <el-input show-password v-model="registerForm.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图形码" :label-width="formLabelWidth" prop="code">
           <el-row>
@@ -256,11 +256,11 @@ export default {
       this.$refs.registerForm.validate(valid => {
         if (valid){
           register(this.registerForm).then(res => {
-            window.console.log(res);
+            // window.console.log(res);
             if (res.data.code==200) {
               this.imageUrl='';
               this.dialogFormVisible=false;
-              this.$message.success("恭喜您!注册成功!");
+              this.$message.success("恭喜您!注册成功!请登录");
             }else{
               return this.$message.error(res.data.message);
             }
