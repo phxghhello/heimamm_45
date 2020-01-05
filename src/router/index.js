@@ -2,10 +2,10 @@
 import Vue from "vue";
 // 导入路由
 import VueRouter from "vue-router";
+import routes from './routes.js'
+// 注册
+Vue.use(VueRouter);
 
-// 导入 组件
-import login from "../views/login/login.vue";
-import index from "../views/index/index.vue";
 
 import {
   Message
@@ -14,24 +14,8 @@ import store from '../store/store.js'
 
 import {userInfo} from '../api/user.js'
 
-// 注册
-Vue.use(VueRouter);
-
-// 创建路由对象
 const router = new VueRouter({
-  routes: [{
-      path: "/",
-      redirect: '/login'
-    },
-    {
-      path: "/login",
-      component: login
-    },
-    {
-      path: "/index",
-      component: index
-    }
-  ]
+  routes
 });
 
 // 重写push方法 屏蔽 重复跳转错误
@@ -81,5 +65,4 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-// 暴露出去
 export default router;

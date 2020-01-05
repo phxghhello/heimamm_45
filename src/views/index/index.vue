@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <div class="header-left">
-        <i class="el-icon-s-operation icon"></i>
+        <i class="el-icon-s-operation icon" @click="isCollapse = !isCollapse"></i>
         <img class="index-logo" src="../../assets/index_logo.png" alt />
         <span class="indexmm">黑马面面</span>
       </div>
@@ -13,19 +13,37 @@
       </div>
     </el-header>
     <el-container>
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside style="width:auto" width="isCollapse?200px:60px">
+        <el-menu
+          :default-active="$route.path"
+          class="el-menu-vertical-demo" router :collapse="isCollapse"
+        >
+          <template v-for="(item, index) in routes[2].children" >
+            <el-menu-item v-if="item.meta.roles.includes($store.state.userInfo.role)" :key="index" :index="item.meta.fullPath">
+              <i :class="item.meta.icon"></i>
+              <span slot="title">{{item.meta.title}}</span>
+            </el-menu-item>
+          </template>
+        </el-menu>
+      </el-aside>
       <el-main>Main</el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
+//导入退出接口
 import { logout } from "../../api/user.js";
+//导入路由信息
+import routes from '../../router/routes.js'
 
 export default {
   name: "index",
   data() {
-    return {};
+    return {
+      routes,
+      isCollapse: false,
+    };
   },
   computed: {
     userInfo() {
@@ -33,6 +51,7 @@ export default {
     }
   },
   methods: {
+    //退出登录
     logout() {
       this.$confirm("确定退出黑马面面吗?", "提示", {
         confirmButtonText: "确定",
@@ -60,7 +79,7 @@ export default {
             message: "已取消退出"
           });
         });
-    }
+    },
   }
 };
 </script>
@@ -83,6 +102,7 @@ export default {
       .icon {
         font-size: 24px;
         margin-right: 15px;
+        cursor: pointer;
       }
       .index-logo {
         width: 33px;
@@ -109,8 +129,16 @@ export default {
       }
     }
   }
-  .el-aside {
-    background-color: skyblue;
+    // 侧边导航
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    height: 100%;
+    width: 200px;
+  }
+  .el-menu--collapse{
+    height: 100%;
+  }
+    .main {
+    background-color: #e8e9ec;
   }
 }
 </style>
