@@ -1,7 +1,7 @@
 // 导入 组件
 import login from "../views/login/login.vue";
 import index from "../views/index/index.vue";
-
+import subject from '../views/index/subject/subject.vue'
 
 
 // 暴露出去
@@ -20,6 +20,7 @@ export default [
     {
         path: "/index",
         component: index,
+        redirect: '/index/subject',
         // 嵌套路由
         children: [{
                 path: "chart",
@@ -64,7 +65,7 @@ export default [
             },
             {
                 path: "subject",
-                // component: subject,
+                component: subject,
                 meta: {
                     title: "学科列表",
                     fullPath: "/index/subject",
