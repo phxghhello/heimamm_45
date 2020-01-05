@@ -6,12 +6,13 @@
 
 <script>
 export default {
-    name:'app'
-}
+  // 组件的名字 在插件中可以看到 建议写上
+  name: "app"
+};
 </script>
 
-<style lang="less" scoped>
-.app-container{
+<style >
+.app-container {
   height: 100%;
 }
 </style>

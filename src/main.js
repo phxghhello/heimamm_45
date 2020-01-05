@@ -1,24 +1,24 @@
 import Vue from 'vue'
 import App from './App.vue'
-
-// 导入 Element-ui
+// 导入路由对象
+import router from './router/index.js'
+// 导入 饿了么 ui的库
 import ElementUI from 'element-ui';
-// 导入 Element-ui的样式
+// 导入 饿了么 的css
 import 'element-ui/lib/theme-chalk/index.css';
+// 导入自己的初始化样式
+import './style/base.css'
 
+// 注册 饿了么 ui
 Vue.use(ElementUI);
-
-// 导入全局样式
-import "@/styles/bass.less";
-import router from './router/index';
-import axios from 'axios'
-Vue.prototype.$axios = axios
-// axios基地址配制
-axios.defaults.baseURL='http://127.0.0.1/heimamm/public'
 
 Vue.config.productionTip = false
 
+// 测试环境变量
+// window.console.log(process.env.VUE_APP_BASEURL)
+
 new Vue({
-  router,
   render: h => h(App),
+  // 挂载 注入 Vue实例
+  router
 }).$mount('#app')
