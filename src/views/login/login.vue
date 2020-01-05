@@ -237,12 +237,13 @@ export default {
             password: this.ruleForm.password,
             code: this.ruleForm.code
           }).then(res => {
-            // window.console.log(res);
+            window.console.log(res);
             if (res.data.code === 202) {
               // 错误
               this.$message.error(res.data.message);
             } else if (res.data.code === 200) {
               this.$message.success("老铁，你可算回来啦！！！");
+              window.localStorage.setItem("mmtoken",res.data.data.token);
               this.$router.push('/index')
             }
           });
