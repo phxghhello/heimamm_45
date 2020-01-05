@@ -34,6 +34,13 @@ const router = new VueRouter({
   ]
 });
 
+// 重写push方法 屏蔽 重复跳转错误
+// 解决两次访问相同路由地址报错
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err);
+};
+
 //地址白名单
 const whitePaths = ['/login']
 //增加导航守卫
@@ -54,7 +61,8 @@ router.beforeEach((to, from, next) => {
           window.localStorage.removeItem("mmtoken")
           next('/login')
         } else {
-          store.commit("SETINFO", res.data);
+          res.data.data.avatar = process.env.VUE_APP_BASEURL +"/"+res.data.data.avatar
+          store.commit("SETINFO", res.data.data);
           next();
         }
       })

@@ -9,7 +9,7 @@
       <div class="header-right">
         <img class="avatar" :src="userInfo.avatar" alt />
         <span class="username">{{userInfo.username}}, 您好</span>
-        <el-button size="small" type="primary">退出</el-button>
+        <el-button size="small" type="primary" @click="logout">退出</el-button>
       </div>
     </el-header>
     <el-container>
@@ -20,23 +20,47 @@
 </template>
 
 <script>
-import { userInfo } from "../../api/user.js";
+import { logout } from "../../api/user.js";
+
 export default {
   name: "index",
   data() {
-    return {
-      userInfo: {}
-    };
+    return {};
   },
-  created() {
-    userInfo().then(res => {
-      window.console.log(res);
-      if (res.data.code == 200) {
-        this.userInfo = res.data.data;
-        this.userInfo.avatar =
-          process.env.VUE_APP_BASEURL + "/" + this.userInfo.avatar;
-      }
-    });
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo;
+    }
+  },
+  methods: {
+    logout() {
+      this.$confirm("确定退出黑马面面吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //调用退出接口
+          logout().then(res => {
+            if (res.code === 200) {
+              window.localStorage.removeItem("mmtoken");
+              this.$store.commit("SETINFO", undefined);
+              // 跳转去登录页
+              this.$router.push("/login");
+              // this.$message({
+              //   type: 'success',
+              //   message: '退出成功!'
+              // });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消退出"
+          });
+        });
+    }
   }
 };
 </script>
