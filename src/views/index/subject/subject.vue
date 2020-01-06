@@ -28,6 +28,7 @@
 
     <!-- 底部 -->
     <el-card class="card-main">
+      <!-- 表格 -->
       <el-table :data="subjectTable">
         <el-table-column type="index" label="序号"></el-table-column>
         <el-table-column prop="rid" label="学科编号"></el-table-column>
@@ -35,7 +36,7 @@
         <el-table-column prop="short_name" label="简称"></el-table-column>
         <el-table-column prop="username" label="创建者"></el-table-column>
         <el-table-column label="创建日期">
-          <template slot-scope="scope">{{ scope.row.create_time | formatTime }}</template>
+          <template slot-scope="scope">{{ scope.row.create_time }}</template>
         </el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
@@ -44,6 +45,7 @@
           </template>
         </el-table-column>
         <el-table-column label="操作">
+          <!-- 要获取该行的数据 template必须加上 -->
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="enterEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="text">启用</el-button>
@@ -53,8 +55,8 @@
       </el-table>
       <!-- 分页器 -->
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :current-page="page"
+        :page-sizes="[5, 6, 7, 8]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -67,6 +69,8 @@
 </template>
 
 <script>
+// 导入学科的接口
+import {getSubjectList} from '../../../api/subject.js'
 export default {
   data() {
     return {
@@ -76,6 +80,7 @@ export default {
         username: "",
         status: ""
       },
+      //暂时的假数据
       subjectTable: [
         {
           rid: "subject1",
@@ -92,14 +97,63 @@ export default {
           username: "管理员",
           create_time: "2019-12-5",
           status: 1
-        }
+        },
+        {
+          rid: "subject3",
+          name: "Java",
+          short_name: "后端",
+          username: "管理员",
+          create_time: "2019-12-5",
+          status: 1
+        },
+        {
+          rid: "subject4",
+          name: "Java",
+          short_name: "后端",
+          username: "管理员",
+          create_time: "2019-12-5",
+          status: 1
+        },
+        {
+          rid: "subject5",
+          name: "Java",
+          short_name: "后端",
+          username: "管理员",
+          create_time: "2019-12-5",
+          status: 1
+        },
+        {
+          rid: "subject6",
+          name: "Java",
+          short_name: "后端",
+          username: "管理员",
+          create_time: "2019-12-5",
+          status: 1
+        },
       ],
-      currentPage: 1,
-      total: 100,
-      limit: 5
+      //当前页-高亮显示
+      page: 1,
+      //总的数据的条数
+      total: 0,
+      //页容量,每页显示多少条信息
+      limit: 5,
+
     };
   },
   methods: {
+    //获取学科列表数据
+    getSubjectList(){
+      //调用接口
+      getSubjectList({
+        page:this.page,
+        limit:this.limit,
+        ...this.subjectForm,  //映射
+      }).then(res=>{
+        window.console.log(res);
+        this.subjectTable = res.data.data.items;
+        this.total = res.data.data.pagination.total;
+      })
+    },
     onSubmit() {
       window.console.log("submit!");
     },
@@ -109,7 +163,11 @@ export default {
     handleCurrentChange(val) {
       window.console.log(`当前页: ${val}`);
     }
-  }
+  },
+  //页面一加载默认返回学科列表的数据
+  created() {
+    this.getSubjectList();
+  },
 };
 </script>
 
@@ -126,10 +184,9 @@ export default {
   .card-main {
     width: 100%;
     margin-top: 19px;
-    .el-pagination{
+    .el-pagination {
       width: 550px;
       margin: 40px auto 8px;
-      
     }
   }
 }
