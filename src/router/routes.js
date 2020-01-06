@@ -2,6 +2,10 @@
 import login from "../views/login/login.vue";
 import index from "../views/index/index.vue";
 import subject from '../views/index/subject/subject.vue'
+import chart from '../views/index/chart/chart.vue'
+import user from '../views/index/user/user.vue'
+import enterprise from '../views/index/enterprise/enterprise.vue'
+import question from '../views/index/question/question.vue'
 
 
 // 暴露出去
@@ -24,7 +28,7 @@ export default [
         // 嵌套路由
         children: [{
                 path: "chart",
-                // component: chart,
+                component: chart,
                 meta: {
                     title: "数据概览",
                     fullPath: "/index/chart",
@@ -34,7 +38,7 @@ export default [
             },
             {
                 path: "user",
-                // component: user,
+                component: user,
                 meta: {
                     title: "用户列表",
                     fullPath: "/index/user",
@@ -44,7 +48,7 @@ export default [
             },
             {
                 path: "question",
-                // component: question,
+                component: question,
                 meta: {
                     title: "题库列表",
                     fullPath: "/index/question",
@@ -55,7 +59,7 @@ export default [
 
             {
                 path: "enterprise",
-                // component: enterprise,
+                component: enterprise,
                 meta: {
                     title: "企业列表",
                     fullPath: "/index/enterprise",
