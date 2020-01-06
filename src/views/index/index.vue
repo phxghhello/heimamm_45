@@ -38,6 +38,8 @@
 import { logout } from "../../api/user.js";
 //导入路由信息
 import routes from '../../router/routes.js'
+//导入token
+import {removeToken} from '../../utils/token.js'
 
 export default {
   name: "index",
@@ -59,27 +61,18 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
+      }).then(() => {
           //调用退出接口
           logout().then(res => {
-            if (res.code === 200) {
-              window.localStorage.removeItem("mmtoken");
+            if (res.data.code === 200) {
+              removeToken();
               this.$store.commit("SETINFO", undefined);
               // 跳转去登录页
               this.$router.push("/login");
-              // this.$message({
-              //   type: 'success',
-              //   message: '退出成功!'
-              // });
             }
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消退出"
-          });
+        }).catch(() => {
+          //什么也不用执行
         });
     },
   }

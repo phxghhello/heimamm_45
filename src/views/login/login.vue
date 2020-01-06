@@ -126,6 +126,8 @@
 <script>
 //导入login接口
 import { login, sendsms, register } from "../../api/login.js";
+//导入token
+import {saveToken} from '../../utils/token.js'
 //定义验证邮箱的方法
 const validateEmail = (rule, value, callback) => {
   if (value === "") {
@@ -168,7 +170,7 @@ export default {
       codeUrl: process.env.VUE_APP_BASEURL + "/captcha?type=login",
       ruleForm: {
         phone: "",
-        password: "",
+        password: "12345678",
         code: "",
         // 是否勾选
         checked: false
@@ -243,7 +245,8 @@ export default {
               this.$message.error(res.data.message);
             } else if (res.data.code === 200) {
               this.$message.success("老铁，你可算回来啦！！！");
-              window.localStorage.setItem("mmtoken",res.data.data.token);
+              // window.localStorage.setItem("mmtoken",res.data.data.token);
+              saveToken(res.data.data.token)
               this.$router.push('/index')
             }
           });

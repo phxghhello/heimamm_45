@@ -1,6 +1,7 @@
 // 导入 axios
 import axios from "axios";
-
+//导入token
+import {getToken} from '../utils/token.js'
 //注册接口
 export function userInfo() {
     // 调用接口
@@ -10,7 +11,7 @@ export function userInfo() {
         // 跨域 是否携带 cookie
         withCredentials: true,
         headers:{
-            token:window.localStorage.getItem("mmtoken")
+            token:getToken()
         }
     })
 }
@@ -24,7 +25,7 @@ export function logout() {
         // 跨域 是否携带 cookie
         withCredentials: true,
         headers:{
-            token:window.localStorage.getItem("mmtoken")
+            token:getToken()
         }
     })
 }
