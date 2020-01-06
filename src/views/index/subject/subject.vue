@@ -21,7 +21,7 @@
         <el-form-item>
           <el-button type="primary" @click="onSubmit">搜索</el-button>
           <el-button>清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增学科</el-button>
+          <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增学科</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -65,20 +65,30 @@
         @current-change="handleCurrentChange"
       ></el-pagination>
     </el-card>
+    <!-- 新增学科的对话框 -->
+    <subjectDialog/>
   </div>
 </template>
 
 <script>
 // 导入学科的接口
 import {getSubjectList} from '../../../api/subject.js'
+//导入新增学科的组件
+import subjectDialog from './component/subjectDialog.vue'
+
 export default {
+  name:'subject',
+  //注册组件
+  components:{
+    subjectDialog
+  },
   data() {
     return {
       subjectForm: {
         rid: "",
         name: "",
         username: "",
-        status: ""
+        status: "",
       },
       //暂时的假数据
       subjectTable: [
@@ -137,6 +147,8 @@ export default {
       total: 0,
       //页容量,每页显示多少条信息
       limit: 5,
+      //新增学科的对话框默认不可见
+      addFormVisible:false,
 
     };
   },
