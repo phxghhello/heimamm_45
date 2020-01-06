@@ -8,8 +8,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 // 导入自己的初始化样式
 import './style/base.css'
-
+//导入共享数据
 import store from './store/store.js'
+//导入过滤器
+import './filters/filters.js'
 
 // 注册 饿了么 ui
 Vue.use(ElementUI);
