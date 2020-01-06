@@ -157,11 +157,18 @@ export default {
     onSubmit() {
       window.console.log("submit!");
     },
-    handleSizeChange(val) {
-      window.console.log(`每页 ${val} 条`);
+    //页容量改变
+    handleSizeChange(limit) {
+      this.limit=limit;
+      this.page=1;
+      //重新获取学科列表数据
+      this.getSubjectList()
     },
-    handleCurrentChange(val) {
-      window.console.log(`当前页: ${val}`);
+    //页码改变
+    handleCurrentChange(page) {
+      this.page=page;
+      //重新获取数据
+      this.getSubjectList()
     }
   },
   //页面一加载默认返回学科列表的数据
