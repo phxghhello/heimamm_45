@@ -53,7 +53,7 @@
           <el-input v-model="questionForm.title"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">搜索</el-button>
+          <el-button type="primary">搜索</el-button>
           <el-button>清除</el-button>
           <el-button type="primary" icon="el-icon-plus">新增试题</el-button>
         </el-form-item>
@@ -131,9 +131,7 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
-      window.console.log("submit!");
-    },
+    
     handleSizeChange(val) {
       window.console.log(`每页 ${val} 条`);
     },
