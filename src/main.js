@@ -12,6 +12,8 @@ import './style/base.css'
 import store from './store/store.js'
 //导入过滤器
 import './filters/filters.js'
+//导入自定义指令
+import './directives/directive.js'
 
 // 注册 饿了么 ui
 Vue.use(ElementUI);

@@ -49,7 +49,7 @@
           <template slot-scope="scope">
             <el-button type="text" @click="editForm(scope.row)">编辑</el-button>
             <el-button type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
-            <el-button type="text" @click="removeSubject(scope.row)">删除</el-button>
+            <el-button type="text" v-power="['超级管理员']" @click="removeSubject(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,6 +79,7 @@ import {getSubjectList,setSubjectStatus,removeSubject} from '../../../api/subjec
 import subjectDialog from './component/subjectDialog.vue'
 //编辑学科的组件
 import subjectEditDialog from './component/subjectEditDialog.vue'
+
 export default {
   name:'subject',
   //注册组件
