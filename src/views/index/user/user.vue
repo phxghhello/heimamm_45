@@ -11,10 +11,10 @@
         </el-form-item>
         <el-form-item label="角色" prop="role_id">
           <el-select v-model="userForm.role_id" placeholder="请选择角色">
-            <el-option label="超级管理员" value="1"></el-option>
-            <el-option label="管理员" value="2"></el-option>
-            <el-option label="老师" value="3"></el-option>
-            <el-option label="学生" value="4"></el-option>
+            <el-option label="超级管理员" :value="1"></el-option>
+            <el-option label="管理员" :value="2"></el-option>
+            <el-option label="老师" :value="3"></el-option>
+            <el-option label="学生" :value="4"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -42,7 +42,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
+            <el-button type="text" @click="editForm(scope.row)">编辑</el-button>
             <el-button type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
             <el-button type="text" @click="removeUser(scope.row)">删除</el-button>
           </template>
@@ -62,16 +62,20 @@
     </el-card>
     <!-- 新增用户的对话框 -->
     <userDialog/>
+    <!-- 编辑用户的对话框 -->
+    <userEditDialog ref="userEditDialog"/>
   </div>
 </template>
 
 <script>
 import userDialog from './component/userDialog.vue'
+import userEditDialog from './component/userEditDialog.vue'
 import {getUserList,setUserStatus,removeUser} from '../../../api/user.js'
 export default {
   name: "user",
   components: {
     userDialog,
+    userEditDialog
   },
   data() {
     return {
@@ -101,6 +105,7 @@ export default {
       total: 0,
       limit: 5,
       addFormVisible: false,
+      editFormVisible:false,
     };
   },
   methods: {
@@ -159,6 +164,11 @@ export default {
           });
         })
         .catch(() => {});
+    },
+    //编辑功能
+    editForm(item){
+      this.editFormVisible=true;
+      this.$refs.userEditDialog.editForm = JSON.parse(JSON.stringify(item));
     },
     //页容量改变
     handleSizeChange(limit) {
