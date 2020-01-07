@@ -44,7 +44,7 @@
           <template slot-scope="scope">
             <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
             <el-button type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
-            <el-button type="text">删除</el-button>
+            <el-button type="text" @click="removeUser(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -67,7 +67,7 @@
 
 <script>
 import userDialog from './component/userDialog.vue'
-import {getUserList,setUserStatus} from '../../../api/user.js'
+import {getUserList,setUserStatus,removeUser} from '../../../api/user.js'
 export default {
   name: "user",
   components: {
@@ -139,6 +139,26 @@ export default {
     //清除功能
     resetFilter() {
       this.$refs.userForm.resetFields();
+    },
+    //删除功能
+    removeUser(item){
+      this.$confirm("此操作将删除该用户信息,是否继续?", "友情提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //调用接口
+          removeUser({
+            id: item.id
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$message.success("已删除");
+              this.getUserList();
+            }
+          });
+        })
+        .catch(() => {});
     },
     //页容量改变
     handleSizeChange(limit) {
