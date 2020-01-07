@@ -47,7 +47,7 @@
         <el-table-column label="操作">
           <!-- 要获取该行的数据 template必须加上 -->
           <template slot-scope="scope">
-            <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
+            <el-button type="text" @click="editForm(scope.row)">编辑</el-button>
             <el-button type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
             <el-button type="text" @click="removeSubject(scope.row)">删除</el-button>
           </template>
@@ -67,6 +67,8 @@
     </el-card>
     <!-- 新增学科的对话框 -->
     <subjectDialog/>
+    <!-- 编辑学科的对话框 -->
+    <subjectEditDialog ref="subjectEditDialog" />
   </div>
 </template>
 
@@ -75,12 +77,13 @@
 import {getSubjectList,setSubjectStatus,removeSubject} from '../../../api/subject.js'
 //导入新增学科的组件
 import subjectDialog from './component/subjectDialog.vue'
-
+import subjectEditDialog from './component/subjectEditDialog.vue'
 export default {
   name:'subject',
   //注册组件
   components:{
-    subjectDialog
+    subjectDialog,
+    subjectEditDialog
   },
   data() {
     return {
@@ -149,10 +152,18 @@ export default {
       limit: 5,
       //新增学科的对话框默认不可见
       addFormVisible:false,
-
+      //编辑学科的对话框默认不可见
+      editFormVisible:false,
     };
   },
   methods: {
+    //编辑学科
+    editForm(item){
+      this.editFormVisible=true;
+      //数据传递给子组件
+      // 需要在子组件上添加一个ref的属性 让 ref="subjectEditDialog"
+      this.$refs.subjectEditDialog.editForm=JSON.parse(JSON.stringify(item))
+    },
     //获取学科列表数据
     getSubjectList(){
       //调用接口
