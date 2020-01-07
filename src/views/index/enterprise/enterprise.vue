@@ -19,8 +19,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">搜索</el-button>
-          <el-button>清除</el-button>
+          <el-button type="primary" @click="filterData">搜索</el-button>
+          <el-button @click="resetFilter">清除</el-button>
           <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增企业</el-button>
         </el-form-item>
       </el-form>
@@ -140,6 +140,15 @@ export default {
           this.getEnterpriseList();
         }
       });
+    },
+    //搜索功能 
+    filterData(){
+      this.page=1;
+      this.getEnterpriseList();
+    },
+    //清除功能
+    resetFilter(){
+      this.$refs.enterpriseForm.resetFields();
     },
     onSubmit() {
       window.console.log("submit!");
