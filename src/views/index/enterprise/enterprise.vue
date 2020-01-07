@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
+            <el-button type="text" @click="editForm(scope.row)">编辑</el-button>
             <el-button
               type="text"
               @click="changeState(scope.row)"
@@ -67,12 +67,15 @@
     </el-card>
     <!-- 新增企业的对话框 -->
     <enterpriseDialog />
+    <!-- 编辑企业的对话框 -->
+    <enterpriseEditDialog ref="enterpriseEditDialog" />
   </div>
 </template>
 
 <script>
 //导入新增企业的组件
 import enterpriseDialog from "./component/enterpriseDialog.vue";
+import enterpriseEditDialog from "./component/enterpriseEditDialog.vue";
 import {
   getEnterpriseList,
   setEnterpriseStatus,
@@ -81,7 +84,8 @@ import {
 export default {
   name: "enterprise",
   components: {
-    enterpriseDialog
+    enterpriseDialog,
+    enterpriseEditDialog
   },
   data() {
     return {
@@ -111,7 +115,9 @@ export default {
       page: 1,
       total: 0,
       limit: 5,
-      addFormVisible: false
+      addFormVisible: false,
+      //编辑学科的对话框默认不可见
+      editFormVisible: false
     };
   },
   methods: {
@@ -142,35 +148,39 @@ export default {
         }
       });
     },
-    //搜索功能 
-    filterData(){
-      this.page=1;
+    //搜索功能
+    filterData() {
+      this.page = 1;
       this.getEnterpriseList();
     },
     //清除功能
-    resetFilter(){
+    resetFilter() {
       this.$refs.enterpriseForm.resetFields();
     },
     //删除功能
-    removeEnterprise(item){
-      this.$confirm('此操作将删除该企业,是否继续?', '友情提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        //调用接口
-        removeEnterprise({
-          id:item.id
-        }).then(res=>{
-          if (res.data.code===200) {
-            this.$message.success("已删除");
-            this.getEnterpriseList();
-          }
+    removeEnterprise(item) {
+      this.$confirm("此操作将删除该企业,是否继续?", "友情提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //调用接口
+          removeEnterprise({
+            id: item.id
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$message.success("已删除");
+              this.getEnterpriseList();
+            }
+          });
         })
-      }).catch(() => {});
+        .catch(() => {});
     },
-    onSubmit() {
-      window.console.log("submit!");
+    //编辑功能
+    editForm(item) {
+      this.editFormVisible=true;
+      this.$refs.enterpriseEditDialog.editForm = JSON.parse(JSON.stringify(item));
     },
     //页容量改变
     handleSizeChange(limit) {

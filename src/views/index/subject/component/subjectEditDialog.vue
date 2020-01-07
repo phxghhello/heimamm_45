@@ -58,14 +58,13 @@ export default {
                 if (res.data.code===200) {
                     this.$parent.getSubjectList()
                     this.$parent.editFormVisible = false;
-                
+                    this.$message.success("已修改!")
                 }
             })
         }else{
             return this.$message.warning("学科信息输入有误,请检查!")
         }
       })
-      this.$parent.editFormVisible = false;
     }
   }
 };
