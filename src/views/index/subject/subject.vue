@@ -19,8 +19,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">搜索</el-button>
-          <el-button>清除</el-button>
+          <el-button type="primary" @click="filterData">搜索</el-button>
+          <el-button @click="resetFilter">清除</el-button>
           <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增学科</el-button>
         </el-form-item>
       </el-form>
@@ -159,7 +159,11 @@ export default {
       getSubjectList({
         page:this.page,
         limit:this.limit,
-        ...this.subjectForm,  //映射
+        // ...this.subjectForm,  //映射
+        name:this.subjectForm.name,
+        rid:this.subjectForm.rid,
+        username:this.subjectForm.username,
+        status:this.subjectForm.status,
       }).then(res=>{
         window.console.log(res);
         this.subjectTable = res.data.data.items;
@@ -175,6 +179,15 @@ export default {
           this.getSubjectList();
         }
       })
+    },
+    //搜索功能 功能没有效果,为啥?
+    filterData(){
+      this.page=1;
+      this.getSubjectList();
+    },
+    //清除功能
+    resetFilter(){
+      this.$refs.subjectForm.resetFields();
     },
     //页容量改变
     handleSizeChange(limit) {
