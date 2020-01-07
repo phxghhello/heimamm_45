@@ -29,7 +29,7 @@ export function setSubjectStatus(id) {
         headers:{
             token:getToken()
         },
-        id,
+        data: { id:id},
     })
 }
 

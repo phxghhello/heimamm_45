@@ -19,7 +19,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">搜索</el-button>
+          <el-button type="primary">搜索</el-button>
           <el-button>清除</el-button>
           <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增学科</el-button>
         </el-form-item>
@@ -47,9 +47,9 @@
         <el-table-column label="操作">
           <!-- 要获取该行的数据 template必须加上 -->
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="enterEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="text">启用</el-button>
-            <el-button size="mini" type="text">删除</el-button>
+            <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
+            <el-button type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
+            <el-button type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,7 +72,7 @@
 
 <script>
 // 导入学科的接口
-import {getSubjectList} from '../../../api/subject.js'
+import {getSubjectList,setSubjectStatus} from '../../../api/subject.js'
 //导入新增学科的组件
 import subjectDialog from './component/subjectDialog.vue'
 
@@ -166,8 +166,15 @@ export default {
         this.total = res.data.data.pagination.total;
       })
     },
-    onSubmit() {
-      window.console.log("submit!");
+    //修改状态
+    changeState(item){
+      setSubjectStatus(item.id).then(res=>{
+        window.console.log(res)
+        if (res.data.code===200) {
+          this.$message.success("状态修改成功!")
+          this.getSubjectList();
+        }
+      })
     },
     //页容量改变
     handleSizeChange(limit) {
@@ -206,6 +213,9 @@ export default {
     .el-pagination {
       width: 550px;
       margin: 40px auto 8px;
+    }
+    span.red{
+      color: red;
     }
   }
 }
