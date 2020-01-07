@@ -150,12 +150,15 @@ export default {
       })
     },
     //页容量改变
-    handleSizeChange(val) {
-      window.console.log(`每页 ${val} 条`);
+    handleSizeChange(limit) {
+      this.limit = limit;
+      this.page = 1;
+      this.getQuestionList();
     },
     //页码改变
-    handleCurrentChange(val) {
-      window.console.log(`当前页: ${val}`);
+    handleCurrentChange(page) {
+      this.page = page;
+      this.getQuestionList();
     }
   },
   created() {
@@ -186,6 +189,9 @@ export default {
     .el-pagination {
       width: 550px;
       margin: 40px auto 8px;
+    }
+    span.red {
+      color: red;
     }
   }
 }
