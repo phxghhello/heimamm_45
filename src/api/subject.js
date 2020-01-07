@@ -44,7 +44,7 @@ export function removeSubject(id) {
         headers:{
             token:getToken()
         },
-        id,
+        data: id,
     })
 }
 

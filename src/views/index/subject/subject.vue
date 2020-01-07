@@ -49,7 +49,7 @@
           <template slot-scope="scope">
             <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
             <el-button type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
-            <el-button type="text">删除</el-button>
+            <el-button type="text" @click="removeSubject(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,7 +72,7 @@
 
 <script>
 // 导入学科的接口
-import {getSubjectList,setSubjectStatus} from '../../../api/subject.js'
+import {getSubjectList,setSubjectStatus,removeSubject} from '../../../api/subject.js'
 //导入新增学科的组件
 import subjectDialog from './component/subjectDialog.vue'
 
@@ -188,6 +188,24 @@ export default {
     //清除功能
     resetFilter(){
       this.$refs.subjectForm.resetFields();
+    },
+    //删除学科列表
+    removeSubject(item){
+      this.$confirm('此操作将删除这个学科,是否继续?', '友情提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        //调用接口
+        removeSubject({
+          id:item.id
+        }).then(res=>{
+          if (res.data.code===200) {
+            this.$message.success("已删除");
+            this.getSubjectList();
+          }
+        })
+      }).catch(() => {});
     },
     //页容量改变
     handleSizeChange(limit) {
