@@ -186,7 +186,7 @@ export default {
       this.$refs.questionForm.resetFields();
     },
     //删除功能
-    removeQuestion() {
+    removeQuestion(item) {
       this.$confirm("此操作将删除该题目,是否继续?", "友情提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
