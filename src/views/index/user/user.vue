@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import {getUserList} from '../../../api/user.js'
 export default {
   data() {
     return {
@@ -90,18 +91,36 @@ export default {
         }
       ],
       page: 1,
-      total: 100,
-      limit: 5
+      total: 0,
+      limit: 5,
     };
   },
   methods: {
+    //获取用户列表
+    getUserList(){
+      //调用接口
+      getUserList({
+        page:this.page,
+        limit:this.limit,
+        ...this.userForm
+      }).then(res=>{
+        window.console.log(res);
+        if (res.data.code === 200) {
+          this.userTable = res.data.data.items;
+          this.total = res.data.data.pagination.total;
+        }
+      })
+    },
     handleSizeChange(val) {
       window.console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       window.console.log(`当前页: ${val}`);
     }
-  }
+  },
+  created() {
+    this.getUserList();
+  },
 };
 </script>
 
