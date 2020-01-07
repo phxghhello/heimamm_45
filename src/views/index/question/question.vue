@@ -53,8 +53,8 @@
           <el-input v-model="questionForm.title"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">搜索</el-button>
-          <el-button>清除</el-button>
+          <el-button type="primary" @click="filterData">搜索</el-button>
+          <el-button @click="resetFilter">清除</el-button>
           <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增试题</el-button>
         </el-form-item>
       </el-form>
@@ -167,6 +167,15 @@ components: {
           this.getQuestionList();
         }
       });
+    },
+    //搜索功能
+    filterData() {
+      this.page = 1;
+      this.getQuestionList();
+    },
+    //清除功能
+    resetFilter() {
+      this.$refs.questionForm.resetFields();
     },
     //页容量改变
     handleSizeChange(limit) {
