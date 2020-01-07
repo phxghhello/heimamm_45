@@ -162,6 +162,13 @@ export default {
     .el-dialog__headerbtn .el-dialog__close {
       color: #fff;
     }
+    .el-select{
+      width: 364px;
+    }
+    .el-select,
+    .el-radio-group{
+      margin-left: 41px;
+    }
   }
 }
 </style>
