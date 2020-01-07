@@ -55,7 +55,7 @@
         <el-form-item>
           <el-button type="primary">搜索</el-button>
           <el-button>清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增试题</el-button>
+          <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增试题</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -96,15 +96,21 @@
         @current-change="handleCurrentChange"
       ></el-pagination>
     </el-card>
+    <!-- 新增题库的对话框 -->
+    <questionDialog/>
   </div>
 </template>
 
 <script>
 //导入接口
 import {getQuestionList} from '../../../api/question.js'
-
+// 导入新增题库的组件
+import questionDialog from './component/questionDialog.vue'
 export default {
   name: "question",
+components: {
+    questionDialog,
+  },
   data() {
     return {
       questionForm: {
@@ -132,6 +138,7 @@ export default {
       page: 1,
       total: 0,
       limit: 5,
+      addFormVisible: false,
     };
   },
   methods: {
@@ -144,7 +151,7 @@ export default {
       }).then(res=>{
         window.console.log(res);
         if (res.data.code === 200) {
-          this.enterpriseTable = res.data.data.items;
+          this.questionTable = res.data.data.items;
           this.total = res.data.data.pagination.total;
         }
       })
