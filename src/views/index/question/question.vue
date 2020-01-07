@@ -1,48 +1,81 @@
 <template>
-  <div class="subject-container">
+  <div class="question-container">
     <!-- 学科头部 -->
     <el-card class="card-header">
-      <el-form :inline="true" :model="subjectForm" ref="subjectForm" class="demo-form-inline">
-        <el-form-item label="学科编号" prop="rid">
-          <el-input v-model="subjectForm.rid"></el-input>
+      <el-form :inline="true" :model="questionForm" ref="questionForm" class="demo-form-inline">
+        <el-form-item label="学科" prop="subject">
+          <el-select v-model="questionForm.subject" placeholder="请选择学科">
+            <el-option label="前端" :value="1"></el-option>
+            <el-option label="后端" :value="2"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="学科名称" prop="name">
-          <el-input v-model="subjectForm.name"></el-input>
+        <el-form-item label="阶段" prop="step">
+          <el-select v-model="questionForm.step" placeholder="请选择阶段">
+            <el-option label="初级" :value="1"></el-option>
+            <el-option label="中级" :value="2"></el-option>
+            <el-option label="高级" :value="3"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="创建者" prop="username" class="short-input">
-          <el-input v-model="subjectForm.username"></el-input>
+        <el-form-item label="企业" prop="enterprise">
+          <el-select v-model="questionForm.enterprise" placeholder="请选择企业">
+            <el-option label="黑马程序员" :value="1"></el-option>
+            <el-option label="阿里" :value="2"></el-option>
+            <el-option label="京东" :value="3"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="题型" prop="type">
+          <el-select v-model="questionForm.type" placeholder="请选择题型">
+            <el-option label="单选" :value="1"></el-option>
+            <el-option label="多选" :value="2"></el-option>
+            <el-option label="简答" :value="3"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="难度" prop="difficulty">
+          <el-select v-model="questionForm.difficulty" placeholder="请选择难度">
+            <el-option label="简单" :value="1"></el-option>
+            <el-option label="一般" :value="2"></el-option>
+            <el-option label="困难" :value="3"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="作者" prop="username">
+          <el-input v-model="questionForm.username"></el-input>
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-select v-model="subjectForm.status" placeholder="请选择状态">
+          <el-select v-model="questionForm.status" placeholder="请选择状态">
             <el-option label="禁用" value="0"></el-option>
             <el-option label="启用" value="1"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="日期" prop="create_date">
+          <el-input v-model="questionForm.create_date" placeholder="选择日期"></el-input>
+        </el-form-item>
+        <el-form-item label="标题" prop="title" class="long-input">
+          <el-input v-model="questionForm.title"></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">搜索</el-button>
           <el-button>清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增学科</el-button>
+          <el-button type="primary" icon="el-icon-plus">新增试题</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
     <!-- 底部 -->
     <el-card class="card-main">
-      <el-table :data="subjectTable">
+      <el-table :data="questionTable">
         <el-table-column type="index" label="序号"></el-table-column>
-        <el-table-column prop="rid" label="学科编号"></el-table-column>
-        <el-table-column prop="name" label="学科名称"></el-table-column>
-        <el-table-column prop="short_name" label="简称"></el-table-column>
+        <el-table-column prop="title" label="题目"></el-table-column>
+        <el-table-column prop="step" label="学科.阶段"></el-table-column>
+        <el-table-column prop="type" label="题型"></el-table-column>
+        <el-table-column prop="enterprise" label="企业"></el-table-column>
         <el-table-column prop="username" label="创建者"></el-table-column>
-        <el-table-column label="创建日期">
-          <template slot-scope="scope">{{ scope.row.create_time | formatTime }}</template>
-        </el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
             <span v-else class="red">禁用</span>
           </template>
         </el-table-column>
+        <el-table-column prop="visit" label="访问量"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="enterEdit(scope.row)">编辑</el-button>
@@ -53,8 +86,8 @@
       </el-table>
       <!-- 分页器 -->
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :current-page="page"
+        :page-sizes="[5, 6, 7, 8]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -70,33 +103,31 @@
 export default {
   data() {
     return {
-      subjectForm: {
-        rid: "",
-        name: "",
+      questionForm: {
+        subject: "",
+        step: "",
+        enterprise: "",
+        type: "",
+        difficulty: "",
         username: "",
-        status: ""
+        status: "",
+        create_date: "",
+        title: ""
       },
-      subjectTable: [
+      questionTable: [
         {
-          rid: "subject1",
-          name: "前端与移动开发",
-          short_name: "前端",
+          title: "ABC",
+          step: "前端.初级",
+          type: "多选",
+          enterprise: "黑马",
           username: "管理员",
-          create_time: "2019-12-4",
-          status: 0
+          status: 1,
+          visit:0,
         },
-        {
-          rid: "subject2",
-          name: "Java",
-          short_name: "后端",
-          username: "管理员",
-          create_time: "2019-12-5",
-          status: 1
-        }
       ],
-      currentPage: 1,
-      total: 100,
-      limit: 5
+      page: 1,
+      total: 0,
+      limit: 5,
     };
   },
   methods: {
@@ -114,22 +145,27 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.subject-container {
+.question-container {
   .el-button--primary .plus {
     font-weight: 500;
   }
-  .short-input {
+  .long-input {
     .el-form-item__content .el-input {
-      width: 100px;
+      width: 388px;
+    }
+  }
+  .el-form {
+    width: 80%;
+    .el-form-item {
+      margin-right: 30px;
     }
   }
   .card-main {
     width: 100%;
     margin-top: 19px;
-    .el-pagination{
+    .el-pagination {
       width: 550px;
       margin: 40px auto 8px;
-      
     }
   }
 }
