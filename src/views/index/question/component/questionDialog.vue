@@ -74,24 +74,31 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="难度" :label-width="formLabelWidth">
-        <el-radio-group v-model="addForm.type">
+        <el-radio-group v-model="addForm.difficulty">
           <el-radio label="简单"></el-radio>
           <el-radio label="一般"></el-radio>
           <el-radio label="困难"></el-radio>
         </el-radio-group>
       </el-form-item>
+      <!-- 时间线 -->
       <el-divider></el-divider>
+      <!-- 试题标题 -->
+      <el-form-item label="试题标题" prop="title"></el-form-item>
+      <div ref="titleHeader" class="title-header"></div>
+      <div ref="titleMain" class="title-main"></div>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">取 消</el-button>
-      <el-button type="primary" @click="addEnterprise">确 定</el-button>
+      <el-button type="primary" @click="addQuestion">确 定</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
+//导入富文本
+import Wangeditor from 'wangeditor'
 //导入新增的方法
-import { addEnterprise } from "../../../../api/enterprise.js";
+import { addQuestion } from "../../../../api/enterprise.js";
 export default {
   data() {
     return {
@@ -114,20 +121,25 @@ export default {
           { required: true, message: "企业简介不能为空", trigger: "blur" }
         ]
       },
-      formLabelWidth: "80px"
+      formLabelWidth: "80px",
+      titleEditor: undefined,
+      answerEditor: undefined,
     };
   },
   methods: {
-    //新增学科
-    addEnterprise() {
+    //新增题库
+    addQuestion() {
       this.$refs.addForm.validate(valid => {
         if (valid) {
           //表单验证通过,调用接口
-          addEnterprise(this.addForm).then(res => {
+          addQuestion(this.addForm).then(res => {
             window.console.log(res);
             if (res.data.code === 200) {
+              // 富文本的清空需要自己来
+              this.titleEditor.txt.html('')
+              this.answerEditor.txt.html('')
               this.$parent.addFormVisible = false;
-              this.$parent.getEnterpriseList();
+              this.$parent.getQuestionList();
               this.$refs.addForm.resetFields();
             } else if (res.data.code === 201) {
               this.$message.warning("该学科编号已存在!");
@@ -139,10 +151,38 @@ export default {
         }
       });
     },
+    opened(){
+      if (!this.titleEditor) {
+        this.titleEditor = new Wangeditor(
+          this.$refs.titleHeader,
+          this.$refs.titleMain
+        );
+        // 绑定 change事件
+        this.titleEditor.customConfig.onchange = html => {
+          // html 即变化之后的内容
+          // console.log(html);
+          this.form.title = html;
+        };
+        this.titleEditor.create();
+      }
+      if (!this.answerEditor) {
+        this.answerEditor = new Wangeditor(
+          this.$refs.answerHeader,
+          this.$refs.answerMain
+        );
+        // 绑定 change事件
+        this.answerEditor.customConfig.onchange = html => {
+          // html 即变化之后的内容
+          // console.log(html);
+          this.form.answer_analyze = html;
+        };
+        this.answerEditor.create();
+      }
+    },
     closeDialog() {
       this.$parent.addFormVisible = false;
       this.$refs.addForm.resetFields();
-    }
+    },
   }
 };
 </script>
