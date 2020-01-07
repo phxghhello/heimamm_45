@@ -79,7 +79,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="enterEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="text">启用</el-button>
+            <el-button size="mini" type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
             <el-button size="mini" type="text">删除</el-button>
           </template>
         </el-table-column>
@@ -103,7 +103,7 @@
 
 <script>
 //导入接口
-import {getQuestionList} from '../../../api/question.js'
+import {getQuestionList,setQuestionStatus} from '../../../api/question.js'
 // 导入新增题库的组件
 import questionDialog from './component/questionDialog.vue'
 export default {
@@ -155,6 +155,18 @@ components: {
           this.total = res.data.data.pagination.total;
         }
       })
+    },
+    //修改状态
+    changeState(item){
+      setQuestionStatus({
+        id:item.id
+      }).then(res => {
+        window.console.log(res);
+        if (res.data.code === 200) {
+          this.$message.success("状态修改成功!");
+          this.getQuestionList();
+        }
+      });
     },
     //页容量改变
     handleSizeChange(limit) {
