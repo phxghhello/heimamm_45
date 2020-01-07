@@ -111,11 +111,14 @@ export default {
         }
       })
     },
-    handleSizeChange(val) {
-      window.console.log(`每页 ${val} 条`);
+    handleSizeChange(limit) {
+        this.limit = limit;
+        this.page = 1;
+        this.getUserList();
     },
-    handleCurrentChange(val) {
-      window.console.log(`当前页: ${val}`);
+    handleCurrentChange(page) {
+      this.page = page;
+      this.getUserList();
     }
   },
   created() {
