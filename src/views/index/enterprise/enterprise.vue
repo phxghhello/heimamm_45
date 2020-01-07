@@ -49,7 +49,7 @@
               type="text"
               @click="changeState(scope.row)"
             >{{scope.row.status === 0?"启用":"禁用"}}</el-button>
-            <el-button type="text">删除</el-button>
+            <el-button type="text" @click="removeEnterprise(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -75,7 +75,8 @@
 import enterpriseDialog from "./component/enterpriseDialog.vue";
 import {
   getEnterpriseList,
-  setEnterpriseStatus
+  setEnterpriseStatus,
+  removeEnterprise
 } from "../../../api/enterprise.js";
 export default {
   name: "enterprise",
@@ -149,6 +150,24 @@ export default {
     //清除功能
     resetFilter(){
       this.$refs.enterpriseForm.resetFields();
+    },
+    //删除功能
+    removeEnterprise(item){
+      this.$confirm('此操作将删除该企业,是否继续?', '友情提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        //调用接口
+        removeEnterprise({
+          id:item.id
+        }).then(res=>{
+          if (res.data.code===200) {
+            this.$message.success("已删除");
+            this.getEnterpriseList();
+          }
+        })
+      }).catch(() => {});
     },
     onSubmit() {
       window.console.log("submit!");
