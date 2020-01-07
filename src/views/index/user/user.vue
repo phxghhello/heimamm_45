@@ -43,7 +43,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
-            <el-button type="text">启用</el-button>
+            <el-button type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
             <el-button type="text">删除</el-button>
           </template>
         </el-table-column>
@@ -67,7 +67,7 @@
 
 <script>
 import userDialog from './component/userDialog.vue'
-import {getUserList} from '../../../api/user.js'
+import {getUserList,setUserStatus} from '../../../api/user.js'
 export default {
   name: "user",
   components: {
@@ -119,6 +119,18 @@ export default {
         }
       })
     },
+    //修改状态
+    changeState(item){
+      setUserStatus({
+        id:item.id
+      }).then(res=>{
+        window.console.log(res)
+        if (res.data.code === 200) {
+          this.$message.success("状态修改成功!");
+          this.getUserList();
+        }
+      })
+    },
     //页容量改变
     handleSizeChange(limit) {
         this.limit = limit;
@@ -153,7 +165,9 @@ export default {
     .el-pagination{
       width: 550px;
       margin: 40px auto 8px;
-      
+    }
+    span.red {
+      color: red;
     }
   }
 }
