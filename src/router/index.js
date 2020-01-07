@@ -6,13 +6,19 @@ import routes from './routes.js'
 // 注册
 Vue.use(VueRouter);
 
-
 import {
   Message
 } from 'element-ui'
 import store from '../store/store.js'
 
-import {userInfo} from '../api/user.js'
+import {
+  userInfo
+} from '../api/user.js'
+
+import {
+  getToken,
+  removeToken
+} from '../utils/token.js'
 
 const router = new VueRouter({
   routes
@@ -32,7 +38,7 @@ router.beforeEach((to, from, next) => {
   //除了登录页以外的页面需要token
   if (!whitePaths.includes(to.path)) {
     //本地token的有无
-    if (!window.localStorage.getItem("mmtoken")) {
+    if (!getToken()) {
       Message.error("必须登录才可以访问首页");
       return next("/login")
     }
@@ -42,12 +48,35 @@ router.beforeEach((to, from, next) => {
       userInfo().then(res => {
         if (res.data.code == 206) {
           Message.error("登录状态有误,请重新登录")
-          window.localStorage.removeItem("mmtoken")
+          removeToken()
           next('/login')
         } else {
-          res.data.data.avatar = process.env.VUE_APP_BASEURL +"/"+res.data.data.avatar
-          store.commit("SETINFO", res.data.data);
-          next();
+          window.console.log(res);
+          if (res.data.status === 0) {
+            Message.error("你是被禁用的状态,请联系管理员")
+            next('/login')
+          } else {
+            //用户头像缺少一个基地址
+            res.data.data.avatar = process.env.VUE_APP_BASEURL + "/" + res.data.data.avatar
+            switch (res.data.data.role) {
+              case '超级管理员':
+                res.data.data.role_id = 1
+                break;
+              case '管理员':
+                res.data.data.role_id = 2
+                break;
+              case '老师':
+                res.data.data.role_id = 3
+                break;
+              case '学生':
+                res.data.data.role_id = 4
+                break;
+              default:
+                break;
+            }
+            store.commit("SETINFO", res.data.data);
+            next();
+          }
         }
       })
     } else {
