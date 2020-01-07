@@ -79,8 +79,12 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="enterEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="text" @click="changeState(scope.row)">{{scope.row.status === 0?"启用":"禁用"}}</el-button>
-            <el-button size="mini" type="text">删除</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="changeState(scope.row)"
+            >{{scope.row.status === 0?"启用":"禁用"}}</el-button>
+            <el-button size="mini" type="text" @click="removeQuestion(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -97,19 +101,23 @@
       ></el-pagination>
     </el-card>
     <!-- 新增题库的对话框 -->
-    <questionDialog/>
+    <questionDialog />
   </div>
 </template>
 
 <script>
 //导入接口
-import {getQuestionList,setQuestionStatus} from '../../../api/question.js'
+import {
+  getQuestionList,
+  setQuestionStatus,
+  removeQuestion
+} from "../../../api/question.js";
 // 导入新增题库的组件
-import questionDialog from './component/questionDialog.vue'
+import questionDialog from "./component/questionDialog.vue";
 export default {
   name: "question",
-components: {
-    questionDialog,
+  components: {
+    questionDialog
   },
   data() {
     return {
@@ -132,34 +140,34 @@ components: {
           enterprise: "黑马",
           username: "管理员",
           status: 1,
-          visit:0,
-        },
+          visit: 0
+        }
       ],
       page: 1,
       total: 0,
       limit: 5,
-      addFormVisible: false,
+      addFormVisible: false
     };
   },
   methods: {
     //获取题库列表数据
-    getQuestionList(){
+    getQuestionList() {
       getQuestionList({
         page: this.page,
         limit: this.limit,
-        ...this.questionForm,
-      }).then(res=>{
+        ...this.questionForm
+      }).then(res => {
         window.console.log(res);
         if (res.data.code === 200) {
           this.questionTable = res.data.data.items;
           this.total = res.data.data.pagination.total;
         }
-      })
+      });
     },
     //修改状态
-    changeState(item){
+    changeState(item) {
       setQuestionStatus({
-        id:item.id
+        id: item.id
       }).then(res => {
         window.console.log(res);
         if (res.data.code === 200) {
@@ -177,6 +185,26 @@ components: {
     resetFilter() {
       this.$refs.questionForm.resetFields();
     },
+    //删除功能
+    removeQuestion() {
+      this.$confirm("此操作将删除该题目,是否继续?", "友情提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //调用接口
+          removeQuestion({
+            id: item.id
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$message.success("已删除");
+              this.getQuestionList();
+            }
+          });
+        })
+        .catch(() => {});
+    },
     //页容量改变
     handleSizeChange(limit) {
       this.limit = limit;
@@ -191,7 +219,7 @@ components: {
   },
   created() {
     this.getQuestionList();
-  },
+  }
 };
 </script>
 
