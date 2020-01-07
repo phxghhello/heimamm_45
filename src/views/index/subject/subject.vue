@@ -77,6 +77,7 @@
 import {getSubjectList,setSubjectStatus,removeSubject} from '../../../api/subject.js'
 //导入新增学科的组件
 import subjectDialog from './component/subjectDialog.vue'
+//编辑学科的组件
 import subjectEditDialog from './component/subjectEditDialog.vue'
 export default {
   name:'subject',
@@ -191,7 +192,7 @@ export default {
         }
       })
     },
-    //搜索功能 功能没有效果,为啥?
+    //搜索功能 
     filterData(){
       this.page=1;
       this.getSubjectList();

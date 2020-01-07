@@ -21,7 +21,7 @@
         <el-form-item>
           <el-button type="primary" @click="onSubmit">搜索</el-button>
           <el-button>清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增企业</el-button>
+          <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增企业</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -62,12 +62,21 @@
         @current-change="handleCurrentChange"
       ></el-pagination>
     </el-card>
+    <!-- 新增企业的对话框 -->
+    <enterpriseDialog/>
+    
   </div>
 </template>
 
 <script>
-import {getEnterpriseList} from '../../../api/enterprise.js'
+//导入新增企业的组件
+import enterpriseDialog from "./component/enterpriseDialog.vue";
+import { getEnterpriseList } from "../../../api/enterprise.js";
 export default {
+  name: "enterprise",
+  components: {
+    enterpriseDialog,
+  },
   data() {
     return {
       enterpriseForm: {
@@ -96,32 +105,32 @@ export default {
       page: 1,
       total: 0,
       limit: 5,
-
+      addFormVisible: false,
     };
   },
   methods: {
     //获取企业列表数据
-    getEnterpriseList(){
+    getEnterpriseList() {
       //调用接口
       getEnterpriseList({
-        page:this.page,
-        limit:this.limit,
-        ...this.enterpriseForm,
-      }).then(res=>{
+        page: this.page,
+        limit: this.limit,
+        ...this.enterpriseForm
+      }).then(res => {
         // window.console.log(res);
-        if (res.data.code===200) {
-          this.enterpriseTable=res.data.data.items;
+        if (res.data.code === 200) {
+          this.enterpriseTable = res.data.data.items;
           this.total = res.data.data.pagination.total;
         }
-      })
+      });
     },
     onSubmit() {
       window.console.log("submit!");
     },
     //页容量改变
     handleSizeChange(limit) {
-      this.limit=limit;
-      this.page=1;
+      this.limit = limit;
+      this.page = 1;
       this.getEnterpriseList();
     },
     //页码改变
@@ -132,7 +141,7 @@ export default {
   },
   created() {
     this.getEnterpriseList();
-  },
+  }
 };
 </script>
 
@@ -149,10 +158,9 @@ export default {
   .card-main {
     width: 100%;
     margin-top: 19px;
-    .el-pagination{
+    .el-pagination {
       width: 550px;
       margin: 40px auto 8px;
-      
     }
   }
 }
