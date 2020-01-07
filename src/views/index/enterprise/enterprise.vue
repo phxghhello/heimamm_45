@@ -45,7 +45,10 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="enterEdit(scope.row)">编辑</el-button>
-            <el-button type="text">启用</el-button>
+            <el-button
+              type="text"
+              @click="changeState(scope.row)"
+            >{{scope.row.status === 0?"启用":"禁用"}}</el-button>
             <el-button type="text">删除</el-button>
           </template>
         </el-table-column>
@@ -63,19 +66,21 @@
       ></el-pagination>
     </el-card>
     <!-- 新增企业的对话框 -->
-    <enterpriseDialog/>
-    
+    <enterpriseDialog />
   </div>
 </template>
 
 <script>
 //导入新增企业的组件
 import enterpriseDialog from "./component/enterpriseDialog.vue";
-import { getEnterpriseList } from "../../../api/enterprise.js";
+import {
+  getEnterpriseList,
+  setEnterpriseStatus
+} from "../../../api/enterprise.js";
 export default {
   name: "enterprise",
   components: {
-    enterpriseDialog,
+    enterpriseDialog
   },
   data() {
     return {
@@ -105,7 +110,7 @@ export default {
       page: 1,
       total: 0,
       limit: 5,
-      addFormVisible: false,
+      addFormVisible: false
     };
   },
   methods: {
@@ -121,6 +126,18 @@ export default {
         if (res.data.code === 200) {
           this.enterpriseTable = res.data.data.items;
           this.total = res.data.data.pagination.total;
+        }
+      });
+    },
+    //改变企业状态
+    changeState(item) {
+      setEnterpriseStatus({
+        id: item.id
+      }).then(res => {
+        window.console.log(res);
+        if (res.data.code === 200) {
+          this.$message.success("状态修改成功!");
+          this.getEnterpriseList();
         }
       });
     },
@@ -161,6 +178,9 @@ export default {
     .el-pagination {
       width: 550px;
       margin: 40px auto 8px;
+    }
+    span.red {
+      color: red;
     }
   }
 }
