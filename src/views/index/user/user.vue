@@ -20,7 +20,7 @@
         <el-form-item>
           <el-button type="primary">搜索</el-button>
           <el-button>清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增用户</el-button>
+          <el-button type="primary" @click="addFormVisible=true" icon="el-icon-plus">新增用户</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -60,12 +60,19 @@
         @current-change="handleCurrentChange"
       ></el-pagination>
     </el-card>
+    <!-- 新增用户的对话框 -->
+    <userDialog/>
   </div>
 </template>
 
 <script>
+import userDialog from './component/userDialog.vue'
 import {getUserList} from '../../../api/user.js'
 export default {
+  name: "user",
+  components: {
+    userDialog,
+  },
   data() {
     return {
       userForm: {
@@ -93,6 +100,7 @@ export default {
       page: 1,
       total: 0,
       limit: 5,
+      addFormVisible: false,
     };
   },
   methods: {
@@ -111,11 +119,13 @@ export default {
         }
       })
     },
+    //页容量改变
     handleSizeChange(limit) {
         this.limit = limit;
         this.page = 1;
         this.getUserList();
     },
+    //页码改变
     handleCurrentChange(page) {
       this.page = page;
       this.getUserList();
