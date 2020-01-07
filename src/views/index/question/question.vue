@@ -100,7 +100,11 @@
 </template>
 
 <script>
+//导入接口
+import {getQuestionList} from '../../../api/question.js'
+
 export default {
+  name: "question",
   data() {
     return {
       questionForm: {
@@ -131,14 +135,32 @@ export default {
     };
   },
   methods: {
-    
+    //获取题库列表数据
+    getQuestionList(){
+      getQuestionList({
+        page: this.page,
+        limit: this.limit,
+        ...this.questionForm,
+      }).then(res=>{
+        window.console.log(res);
+        if (res.data.code === 200) {
+          this.enterpriseTable = res.data.data.items;
+          this.total = res.data.data.pagination.total;
+        }
+      })
+    },
+    //页容量改变
     handleSizeChange(val) {
       window.console.log(`每页 ${val} 条`);
     },
+    //页码改变
     handleCurrentChange(val) {
       window.console.log(`当前页: ${val}`);
     }
-  }
+  },
+  created() {
+    this.getQuestionList();
+  },
 };
 </script>
 
