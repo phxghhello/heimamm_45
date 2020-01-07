@@ -52,8 +52,8 @@
       </el-table>
       <!-- 分页器 -->
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20]"
+        :current-page="page"
+        :page-sizes="[5, 6, 7, 8]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import {getEnterpriseList} from '../../../api/enterprise.js'
 export default {
   data() {
     return {
@@ -75,6 +76,7 @@ export default {
         username: "",
         status: ""
       },
+      // 暂时的假数据
       enterpriseTable: [
         {
           eid: "enterprise1",
@@ -91,12 +93,28 @@ export default {
           status: 1
         }
       ],
-      currentPage: 1,
-      total: 100,
-      limit: 5
+      page: 1,
+      total: 0,
+      limit: 5,
+
     };
   },
   methods: {
+    //获取企业列表数据
+    getEnterpriseList(){
+      //调用接口
+      getEnterpriseList({
+        page:this.page,
+        limit:this.limit,
+        ...this.enterpriseForm,
+      }).then(res=>{
+        // window.console.log(res);
+        if (res.data.code===200) {
+          this.enterpriseTable=res.data.data.items;
+          this.total = res.data.data.pagination.total;
+        }
+      })
+    },
     onSubmit() {
       window.console.log("submit!");
     },
@@ -106,7 +124,10 @@ export default {
     handleCurrentChange(val) {
       window.console.log(`当前页: ${val}`);
     }
-  }
+  },
+  created() {
+    this.getEnterpriseList();
+  },
 };
 </script>
 
