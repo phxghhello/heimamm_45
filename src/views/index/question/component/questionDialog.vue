@@ -10,8 +10,12 @@
     <el-form ref="addForm" :model="addForm" :rules="rules">
       <el-form-item label="学科" prop="subject" :label-width="formLabelWidth">
         <el-select v-model="addForm.subject" placeholder="请选择学科">
-          <el-option label="前端" :value="1"></el-option>
-          <el-option label="后端" :value="2"></el-option>
+          <el-option
+            v-for="item in $parent.subjectList"
+            :key="item.id"
+            label="item.name"
+            :value="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="阶段" prop="step" :label-width="formLabelWidth">
@@ -23,61 +27,29 @@
       </el-form-item>
       <el-form-item label="企业" prop="enterprise" :label-width="formLabelWidth">
         <el-select v-model="addForm.enterprise" placeholder="请选择企业">
-          <el-option label="黑马程序员" :value="1"></el-option>
-          <el-option label="阿里" :value="2"></el-option>
-          <el-option label="京东" :value="3"></el-option>
+          <el-option
+            v-for="item in $parent.enterpriseList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="城市" prop="city" :label-width="formLabelWidth">
-        <el-select v-model="addForm.city" placeholder="请选择城市">
-          <el-option label="北京" :value="1"></el-option>
-          <el-option label="天津" :value="2"></el-option>
-          <el-option label="上海" :value="3"></el-option>
-          <el-option label="重庆" :value="4"></el-option>
-          <el-option label="河北" :value="5"></el-option>
-          <el-option label="河南" :value="6"></el-option>
-          <el-option label="云南" :value="7"></el-option>
-          <el-option label="辽宁" :value="8"></el-option>
-          <el-option label="黑龙江" :value="9"></el-option>
-          <el-option label="湖南" :value="10"></el-option>
-          <el-option label="安徽" :value="11"></el-option>
-          <el-option label="山东" :value="12"></el-option>
-          <el-option label="新疆" :value="13"></el-option>
-          <el-option label="江苏" :value="14"></el-option>
-          <el-option label="浙江" :value="15"></el-option>
-          <el-option label="江西" :value="16"></el-option>
-          <el-option label="湖北" :value="17"></el-option>
-          <el-option label="广西" :value="18"></el-option>
-          <el-option label="甘肃" :value="19"></el-option>
-          <el-option label="山西" :value="20"></el-option>
-          <el-option label="内蒙古" :value="21"></el-option>
-          <el-option label="陕西" :value="22"></el-option>
-          <el-option label="吉林" :value="23"></el-option>
-          <el-option label="福建" :value="24"></el-option>
-          <el-option label="贵州" :value="25"></el-option>
-          <el-option label="广东" :value="26"></el-option>
-          <el-option label="青海" :value="27"></el-option>
-          <el-option label="西藏" :value="28"></el-option>
-          <el-option label="四川" :value="29"></el-option>
-          <el-option label="宁夏" :value="30"></el-option>
-          <el-option label="海南" :value="31"></el-option>
-          <el-option label="台湾" :value="32"></el-option>
-          <el-option label="香港" :value="33"></el-option>
-          <el-option label="澳门" :value="34"></el-option>
-        </el-select>
+        <el-cascader v-model="addForm.city" :options="options" :props="{ value: 'label' }"></el-cascader>
       </el-form-item>
       <el-form-item label="题型" :label-width="formLabelWidth">
         <el-radio-group v-model="addForm.type">
-          <el-radio label="单选"></el-radio>
-          <el-radio label="多选"></el-radio>
-          <el-radio label="简答"></el-radio>
+          <el-radio :lable="1">单选</el-radio>
+          <el-radio :lable="2">多选</el-radio>
+          <el-radio :lable="3">简答</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="难度" :label-width="formLabelWidth">
         <el-radio-group v-model="addForm.difficulty">
-          <el-radio label="简单"></el-radio>
-          <el-radio label="一般"></el-radio>
-          <el-radio label="困难"></el-radio>
+          <el-radio :lable="1">简单</el-radio>
+          <el-radio :lable="2">一般</el-radio>
+          <el-radio :lable="3">困难</el-radio>
         </el-radio-group>
       </el-form-item>
       <!-- 时间线 -->
@@ -89,7 +61,7 @@
       <!-- 单选 -->
       <el-form-item
         label="单选"
-        v-if="addForm.type===1"
+        v-if="addForm.type === '1'"
         class="single-item"
         prop="single_select_answer"
         :label-width="formLabelWidth"
@@ -156,7 +128,7 @@
       <!-- 多选 -->
       <el-form-item
         label="多选"
-        v-if="addForm.type===2"
+        v-if="addForm.type==='2'"
         class="multiple-item"
         prop="multiple_select_answer"
         :label-width="formLabelWidth"
@@ -252,7 +224,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="closeDialog">取 消</el-button>
+      <el-button @click="$parent.addFormVisible=false">取 消</el-button>
       <el-button type="primary" @click="addQuestion">确 定</el-button>
     </div>
   </el-dialog>
@@ -261,33 +233,82 @@
 <script>
 //导入富文本
 import Wangeditor from "wangeditor";
+import { provinceAndCityData } from "element-china-area-data";
 //导入新增的方法
-import { addQuestion } from "../../../../api/enterprise.js";
+import { addQuestion } from "../../../../api/question.js";
 export default {
+  name: "question-add",
   data() {
     return {
       addForm: {
-        eid: "qy0001",
-        name: "黑马程序员1",
-        short_name: "",
-        intro: "",
-        remark: ""
-      },
-      rules: {
-        eid: [{ required: true, message: "企业编号不能为空", trigger: "blur" }],
-        name: [
-          { required: true, message: "企业名称不能为空", trigger: "blur" }
-        ],
-        short_name: [
-          { required: true, message: "企业简称不能为空", trigger: "blur" }
-        ],
-        intro: [
-          { required: true, message: "企业简介不能为空", trigger: "blur" }
+        title: "",
+        type: "1",
+        subject: "",
+        step: "1",
+        enterprise: 15,
+        difficulty: 2,
+        single_select_answer: "",
+        multiple_select_answer: [],
+        video: "",
+        remark: "",
+        city: ["天津市", "市辖区"],
+        short_answer: "简答答案",
+        answer_analyze: "",
+        select_options: [
+          {
+            label: "A",
+            text: "狗不理",
+            image: "upload/20191129/fd5f03a07d95e3948860240564b180e4.jpeg"
+          },
+          {
+            label: "B",
+            text: "猫不理",
+            image: "upload/20191129/e93e7bb72accda7f3159cdabc4203991.jpeg"
+          },
+          {
+            label: "C",
+            text: "麻花",
+            image: "upload/20191129/b7caf98be9d0aa6764b0112ba0dfa19e.jpeg"
+          },
+          {
+            label: "D",
+            text: "炸酱面",
+            image: "upload/20191129/4067f19ab53a5e8388ad3459e23110f0.jpeg"
+          }
         ]
       },
+      rules: {
+        title: [{ required: true, message: "标题不能为空" }],
+        type: [{ required: true, message: "类型不能为空" }],
+        subject: [{ required: true, message: "学科不能为空" }],
+        step: [{ required: true, message: "阶段不能为空" }],
+        enterprise: [{ required: true, message: "企业不能为空" }],
+        difficulty: [{ required: true, message: "难度不能为空" }],
+        single_select_answer: [
+          { required: true, message: "单选题答案不能为空" }
+        ],
+        multiple_select_answer: [
+          { required: true, message: "多选题答案不能为空" }
+        ],
+        video: [{ required: true, message: "视频不能为空" }],
+        remark: [{ required: true, message: "备注不能为空" }],
+        short_answer: [{ required: true, message: "简答题答案不能为空" }],
+        answer_analyze: [{ required: true, message: "答案解析不能为空" }],
+        select_options: [{ required: true, message: "选项不能为空" }]
+      },
+      // 图片的上传地址
+      uploadAction: process.env.VUE_APP_BASEURL + "/question/upload",
       formLabelWidth: "80px",
       titleEditor: undefined,
-      answerEditor: undefined
+      answerEditor: undefined,
+      options: provinceAndCityData,
+      //图片预览地址
+      imageAUrl: "",
+      imageBUrl: "",
+      imageCUrl: "",
+      imageDUrl: "",
+      //视频预览地址
+      videoUrl: ""
     };
   },
   methods: {
@@ -305,8 +326,12 @@ export default {
               this.$parent.addFormVisible = false;
               this.$parent.getQuestionList();
               this.$refs.addForm.resetFields();
-            } else if (res.data.code === 201) {
-              this.$message.warning("该学科编号已存在!");
+              // 预览地址清空
+              this.imageAUrl = "";
+              this.imageBUrl = "";
+              this.imageCUrl = "";
+              this.imageDUrl = "";
+              this.videoUrl = "";
             }
           });
         } else {
@@ -346,6 +371,52 @@ export default {
     closeDialog() {
       this.$parent.addFormVisible = false;
       this.$refs.addForm.resetFields();
+    },
+    handleVideoSuccess(res, file) {
+      window.console.log(res);
+      this.videoUrl = URL.createObjectURL(file.raw);
+      this.form.video = res.data.url;
+    },
+    handleASuccess(res, file) {
+      this.imageAUrl = URL.createObjectURL(file.raw);
+      this.form.select_options[0].image = res.data.data.url;
+    },
+    handleBSuccess(res, file) {
+      this.imageBUrl = URL.createObjectURL(file.raw);
+      this.form.select_options[1].image = res.data.data.url;
+    },
+    handleCSuccess(res, file) {
+      this.imageCUrl = URL.createObjectURL(file.raw);
+      this.form.select_options[2].image = res.data.data.url;
+    },
+    handleDSuccess(res, file) {
+      this.imageDUrl = URL.createObjectURL(file.raw);
+      this.form.select_options[3].image = res.data.data.url;
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG或PNG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    beforeVideoUpload(file) {
+      window.console.log(file);
+      const isJPG = file.type === "video/mp4";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传解析视频只能是 MP4 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传解析视频大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
     }
   }
 };
