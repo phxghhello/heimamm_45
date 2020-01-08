@@ -86,6 +86,170 @@
       <el-form-item label="试题标题" prop="title"></el-form-item>
       <div ref="titleHeader" class="title-header"></div>
       <div ref="titleMain" class="title-main"></div>
+      <!-- 单选 -->
+      <el-form-item
+        label="单选"
+        v-if="addForm.type===1"
+        class="single-item"
+        prop="single_select_answer"
+        :label-width="formLabelWidth"
+      >
+        <el-radio-group v-model="addForm.single_select_answer">
+          <div class="radio-box">
+            <el-radio label="A">A</el-radio>
+            <el-input v-model="addForm.select_options[0].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleASuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageAUrl" :src="imageAUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+          <div class="radio-box">
+            <el-radio label="B">B</el-radio>
+            <el-input v-model="addForm.select_options[1].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleBSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageBUrl" :src="imageBUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+          <div class="radio-box">
+            <el-radio label="C">C</el-radio>
+            <el-input v-model="addForm.select_options[2].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleCSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageCUrl" :src="imageCUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+          <div class="radio-box">
+            <el-radio label="D">D</el-radio>
+            <el-input v-model="addForm.select_options[3].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleDSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageDUrl" :src="imageDUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+        </el-radio-group>
+      </el-form-item>
+      <!-- 多选 -->
+      <el-form-item
+        label="多选"
+        v-if="addForm.type===2"
+        class="multiple-item"
+        prop="multiple_select_answer"
+        :label-width="formLabelWidth"
+      >
+        <el-radio-group v-model="addForm.multiple_select_answer">
+          <div class="radio-box">
+            <el-radio label="A">A</el-radio>
+            <el-input v-model="addForm.select_options[0].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleASuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageAUrl" :src="imageAUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+          <div class="radio-box">
+            <el-radio label="B">B</el-radio>
+            <el-input v-model="addForm.select_options[1].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleBSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageBUrl" :src="imageBUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+          <div class="radio-box">
+            <el-radio label="C">C</el-radio>
+            <el-input v-model="addForm.select_options[2].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleCSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageCUrl" :src="imageCUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+          <div class="radio-box">
+            <el-radio label="D">D</el-radio>
+            <el-input v-model="addForm.select_options[3].text" placeholder></el-input>
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAction"
+              :show-file-list="false"
+              :on-success="handleDSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageDUrl" :src="imageDUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+        </el-radio-group>
+      </el-form-item>
+      <!-- 简答 -->
+      <el-form-item v-else label="简答" class="answer-item" prop="short_answer">
+        <el-input v-model="addForm.short_answer" type="textarea" rows="3"></el-input>
+      </el-form-item>
+      <!-- 时间线 -->
+      <el-divider></el-divider>
+      <!-- 解析视频 -->
+      <el-form-item label="解析视频" prop="video" class="video-item" :label-width="formLabelWidth">
+        <el-upload
+          class="avatar-uploader"
+          :action="uploadAction"
+          :show-file-list="false"
+          :on-success="handleVideoSuccess"
+          :before-upload="beforeVideoUpload"
+        >
+          <el-button type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传video/mp4文件，且不超过2048kb</div>
+        </el-upload>
+        <video class="video" controls :src="videoUrl"></video>
+      </el-form-item>
+      <!-- 时间线 -->
+      <el-divider></el-divider>
+      <!-- 答案解析 -->
+      <el-form-item label="答案解析" prop="answer_analyze"></el-form-item>
+      <div ref="answerHeader" class="answer-header"></div>
+      <div ref="answerMain" class="answer-main"></div>
+      <!-- 简答 -->
+      <el-form-item label="试题备注" prop="remark" class="answer-item">
+        <el-input v-model="addForm.remark" type="textarea" rows="3" placeholder></el-input>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">取 消</el-button>
@@ -96,7 +260,7 @@
 
 <script>
 //导入富文本
-import Wangeditor from 'wangeditor'
+import Wangeditor from "wangeditor";
 //导入新增的方法
 import { addQuestion } from "../../../../api/enterprise.js";
 export default {
@@ -123,7 +287,7 @@ export default {
       },
       formLabelWidth: "80px",
       titleEditor: undefined,
-      answerEditor: undefined,
+      answerEditor: undefined
     };
   },
   methods: {
@@ -136,8 +300,8 @@ export default {
             window.console.log(res);
             if (res.data.code === 200) {
               // 富文本的清空需要自己来
-              this.titleEditor.txt.html('')
-              this.answerEditor.txt.html('')
+              this.titleEditor.txt.html("");
+              this.answerEditor.txt.html("");
               this.$parent.addFormVisible = false;
               this.$parent.getQuestionList();
               this.$refs.addForm.resetFields();
@@ -151,7 +315,7 @@ export default {
         }
       });
     },
-    opened(){
+    opened() {
       if (!this.titleEditor) {
         this.titleEditor = new Wangeditor(
           this.$refs.titleHeader,
@@ -182,7 +346,7 @@ export default {
     closeDialog() {
       this.$parent.addFormVisible = false;
       this.$refs.addForm.resetFields();
-    },
+    }
   }
 };
 </script>
@@ -202,11 +366,11 @@ export default {
     .el-dialog__headerbtn .el-dialog__close {
       color: #fff;
     }
-    .el-select{
+    .el-select {
       width: 364px;
     }
     .el-select,
-    .el-radio-group{
+    .el-radio-group {
       margin-left: 41px;
     }
   }
